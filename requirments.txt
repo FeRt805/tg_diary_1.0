@@ -1,0 +1,11 @@
+aiogram==2.18
+sqlalchemy==1.4.29
+prettytable==3.0.0
+russian-names==0.1.2
+nickname-generator==1.0.1
+python-dateutil==2.8.2
+matplotlib==3.5.1
+pandas==1.4.0
+seaborn==0.11.2
+pyyaml==6.0
+
