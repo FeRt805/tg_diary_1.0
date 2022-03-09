@@ -7,8 +7,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from making_db_structure import Schools, Subjects, Classes, Students, Studying, Hometasks, Marks, Timetables, Base
 from tg_table import tg_table
-from config import log, admin, sasha1
-
+# from config import log, admin, sasha1, schools_num_min, schools_num_max, classes_to_remove_min,
+# classes_to_remove_max, students_in_class_min, students_in_class_max, marks_chance_min, marks_chance_max,
+# marks_chance_edge
+from config import *
 '''
 Генератор школ, классов, учеников, дз, отметок и тд
 '''
@@ -173,7 +175,8 @@ def get_nickname(name=""):
 
 def generate():
     global schools, subjects, classes, students, studying, hometasks, marks, timetables
-    schools_num = random.randint(7, 15)  # Количество школ
+    # schools_num = random.randint(7, 15)  # Количество школ
+    schools_num = random.randint(schools_num_min, schools_num_max)  # Количество школ
     schools = []
     school_prenames = ["ГБОУ Школа №", "Лицей №", "Закрытая Школа №"]
     for i in range(1, schools_num + 1):
@@ -198,7 +201,8 @@ def generate():
                 classes_school.append(f"{year}{letter}")
 
         # Удаляем случайные классы
-        classes_to_remove = random.randint(0, 8)  # Количество удаляемых классов
+        classes_to_remove = random.randint(classes_to_remove_min, classes_to_remove_max)  # Количество удаляемых классов
+        # classes_to_remove = random.randint(0, 8)  # Количество удаляемых классов
         # classes_to_remove = random.randint(25, 30)  # Количество удаляемых классов
         for i in range(classes_to_remove):
             classes_school.remove(random.choice(classes_school))
@@ -217,8 +221,9 @@ def generate():
     students = []  # Students table
     all_nicks = []
     for class_id in range(1, len(classes)):
-        students_in_class = random.randint(20, 35)  # Количество человек в классе
+        # students_in_class = random.randint(20, 35)  # Количество человек в классе
         # students_in_class = random.randint(2, 5)  # Количество человек в классе
+        students_in_class = random.randint(students_in_class_min, students_in_class_max)  # Количество человек в классе
         for i in range(students_in_class):
             name = RN.get_person()
             while 1:  # make unique
@@ -444,7 +449,8 @@ def generate():
             if day_real != "Воскресенье" and day_real != "Суббота" and len(timetable[day_real]) > 3:
                 # subject_to_mark = random.choice(timetable[day_real])  # Предмет на который ставиться оценка
                 for subject_to_mark in timetable[day_real]:
-                    if random.randint(0, 100) > 35:  # Шанс 65% на оценку по каждому предмету
+                    if random.randint(marks_chance_min, marks_chance_max) > marks_chance_edge:
+                        # Шанс 65% на оценку по каждому предмету
                         if subject_to_mark.startswith("Доп."):
                             continue
                         day_list_dates = list(map(lambda x: int(x), day[day.find(" "):].split("-")))

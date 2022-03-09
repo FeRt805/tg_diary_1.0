@@ -5,13 +5,23 @@
 _Доступ к админ учетке у автора в ТГ: @FeRt805_ 
 ### Проект тестировался на **python3.9** (UBUNTU 20.04 LTS SERVER)
 ### Для запуска на собственном сервере нужно создать **config.yaml**   
-_Пример config.yaml_   
+_Пояснение вида config.yaml_   
 ```
 TOKEN: "ТОКЕН_TG_Бота"  
 sasha1: ["Логин_главного_пользователя", "Пароль", "Телеграмм_ID"]  
 admin: ["Логин_админа", "Пароль"]   
     # log: False   
-log: Логирование_True_False
+log: Логирование_True_False 
+schools_num_min: Минимальное число школ
+schools_num_max: Максимальное число школ
+classes_to_remove_min: Минимальное число удаляемых классов из всех возможных
+classes_to_remove_max: Максимальное число удаляемых классов из всех возможных
+students_in_class_min: Минимальное число учеников в классе
+students_in_class_max: Максимальное число учеников в классе
+marks_chance_min: 0
+marks_chance_max: 100
+marks_chance_edge: 35
+# Шанс оценки 65%
 ```
 ### Запустить файл на собственном сервере
 ```python3.9 main.py```
