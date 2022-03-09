@@ -60,8 +60,9 @@ if len(l_no) != 0:
         print("Выход...")
         sys.exit(1)
 
-from filling_db import generate, load
+
 if not os.path.exists(r"./data.db"):  # Проверка на существование БД
+    from filling_db import generate, load
     print("\nНе существует базы данных. Запуск процесса генерации\n")
     os.system("python3.9 ./making_db_structure.py")
     generate()
