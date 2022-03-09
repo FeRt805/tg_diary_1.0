@@ -112,4 +112,4 @@ def next_day(days_passed=1):
         print("Успешно эмулирован новый день:", days[TODAY.weekday()], str(TODAY))
         print("##############################################")
 
-    return "Успешно эмулирован новый день:" + days[TODAY.weekday()] + str(TODAY) + "\nДобавлены новые ДЗ и оценки"
+    return "Успешно эмулирован новый день: " + days[TODAY.weekday()] + str(TODAY) + "\nДобавлены новые ДЗ и оценки"

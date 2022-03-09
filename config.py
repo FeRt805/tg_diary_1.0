@@ -1,6 +1,6 @@
 import yaml
 
-path_to_config = r'C:\Users\orlan\PycharmProjects\config.yaml'  # Конфиг с паролями и токеном
+path_to_config = r'../config.yaml'  # Конфиг с паролями и токеном
 
 
 def get_config():
