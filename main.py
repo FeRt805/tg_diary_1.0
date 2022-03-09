@@ -62,11 +62,11 @@ if len(l_no) != 0:
 
 from filling_db import generate, load
 if not os.path.exists(r"./data.db"):  # Проверка на существование БД
-    print("Не существует базы данных. Запуск процесса генерации")
+    print("\nНе существует базы данных. Запуск процесса генерации\n")
     os.system("python3.9 ./making_db_structure.py")
     generate()
     load()
-    print("БД сгенерирована")
+    print("\nБД сгенерирована\n")
 
-print("Запуск Telegram обработчика")
+print("\nЗапуск Telegram обработчика\n")
 os.system("python3.9 ./telegram_commands.py")
