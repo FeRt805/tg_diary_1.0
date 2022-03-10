@@ -2,6 +2,7 @@ import os
 import sys
 import importlib.util
 
+
 def check_module(module_name):
     """
     Проверяет, можно ли импортировать модуль без его фактического импорта
@@ -20,6 +21,7 @@ def check_module(module_name):
     else:
         # print('Module: {} can be imported!'.format(module_name))
         return module_spec
+
 
 # def check_module(module):
 #     try:
@@ -60,9 +62,9 @@ if len(l_no) != 0:
         print("Выход...")
         sys.exit(1)
 
-
 if not os.path.exists(r"./data.db"):  # Проверка на существование БД
     from filling_db import generate, load
+
     print("\nНе существует базы данных. Запуск процесса генерации\n")
     os.system("python3.9 ./making_db_structure.py")
     generate()

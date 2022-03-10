@@ -3,7 +3,7 @@ from dateutil import parser as dtparser
 from get_from_db import get_timetables_all
 import random
 from filling_db import get_hometasks, get_random_marks, days
-from config import log
+from config import *
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from making_db_structure import Schools, Subjects, Classes, Students, Studying, Hometasks, Marks, Timetables, Base
@@ -75,7 +75,8 @@ def next_day(days_passed=1):
             if day_real != "Воскресенье" and day_real != "Суббота" and len(timetable[day_real]) > 3:
                 # subject_to_mark = random.choice(timetable[day_real])  # Предмет на который ставиться оценка
                 for subject_to_mark in timetable[day_real]:
-                    if random.randint(0, 100) > 35:  # Шанс 65% на оценку по каждому предмету
+                    if random.randint(marks_chance_min, marks_chance_max) > marks_chance_edge:
+                        # Шанс 65% на оценку по каждому предмету
                         if subject_to_mark.startswith("Доп."):
                             continue
                         day_list_dates = list(map(lambda x: int(x), day[day.find(" "):].split("-")))
