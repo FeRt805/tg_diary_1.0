@@ -7,9 +7,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from making_db_structure import Schools, Subjects, Classes, Students, Studying, Hometasks, Marks, Timetables, Base
 from tg_table import tg_table
-# from config import log, admin, sasha1, schools_num_min, schools_num_max, classes_to_remove_min,
-# classes_to_remove_max, students_in_class_min, students_in_class_max, marks_chance_min, marks_chance_max,
-# marks_chance_edge
 from config import *
 '''
 Генератор школ, классов, учеников, дз, отметок и тд
