@@ -147,6 +147,11 @@ class ch_password(StatesGroup):
 class dest_mark_wait(StatesGroup):
     dest_mark = State()
 
+class wait_for_ht(StatesGroup):
+    ht_subject = State()
+
+class wait_for_pr(StatesGroup):
+    args = State()
 
 async def is_user_logined(tg_id, message):
     """
@@ -524,7 +529,8 @@ async def predict_func(message: types.Message):
         s = []
         # КОСТЫЛЬ заключающийся в добавлении пустого символа, который потом ищется хендлиром для обработки кнопок
         for i in subjects:
-            s.append(str(i) + " ")  # Невидимый символ
+            # s.append(str(i) + " ")  # Невидимый символ
+            s.append(str(i))  # Невидимый символ
         #      🔎 🔍 ☃☃☃☃
         subjects = s
 
@@ -543,20 +549,21 @@ async def predict_func(message: types.Message):
                 l = []
 
         marks = "Выберите предмет..."
+        await wait_for_pr.args.set()
         await message.answer(marks, reply_markup=kb, parse_mode=ParseMode.MARKDOWN)
 
 
 ########################################################################
-@dp.message_handler(Text(contains=" "))
-async def predict_handle(message: types.Message):
+@dp.message_handler(state=wait_for_pr.args)
+async def predict_handle(message: types.Message, state: FSMContext):
     """
     Обработчик предсказаний
-    :param message:
-    :return:
     """
+    await state.update_data(args=message.text)
     tg_id = message.from_user.id
+    user_data = await state.get_data()
     if await is_user_logined(tg_id, message):
-        marks = get_marks(tg_id, message.text[:-1])
+        marks = get_marks(tg_id, message.text)
 
         # сортировка по дате
         for mark1 in range(len(marks) - 1):
@@ -564,7 +571,7 @@ async def predict_handle(message: types.Message):
                 if marks[mark2][1] > marks[mark2 + 1][1]:
                     marks[mark2], marks[mark2 + 1] = marks[mark2 + 1], marks[mark2]
 
-        pretty_marks = "```" + marks_table(marks, message.text[:-1]) + "```"
+        pretty_marks = "```" + marks_table(marks, message.text) + "```"
         raw_marks = []
         for i in marks:
             raw_marks.append(i[0])
@@ -578,7 +585,7 @@ async def predict_handle(message: types.Message):
 
         await bot.send_message(message.chat.id, predict,
                                reply_markup=types.ReplyKeyboardRemove(), parse_mode=ParseMode.MARKDOWN)
-
+        await state.finish()
 
 ########################################################################
 
@@ -868,8 +875,10 @@ async def hometasks_func(message: types.Message):
         subjects = get_subjects(tg_id)
         s = []
         # КОСТЫЛЬ заключающийся в добавлении пустого символа, который потом ищется хендлиром для обработки кнопок
+        # Я ПОЧИНИЛ ПОТОМУ ЧТО СРАНЫЙ EDGE не поддерживает этот символ
         for i in subjects:
-            s.append(str(i) + " ")  # Невидимый символ
+            s.append(str(i))  # Невидимый символ
+            # s.append(str(i) + " ")  # Невидимый символ
         #      🔎 🔍 ☃☃☃☃
         subjects = s
 
@@ -888,8 +897,9 @@ async def hometasks_func(message: types.Message):
                 l = []
 
         # kb.add(*subjects)
-        kb.row(KeyboardButton("Все задания "))
-
+        # kb.row(KeyboardButton("Все задания "))
+        kb.row(KeyboardButton("Все задания"))
+        await wait_for_ht.ht_subject.set()
         await message.answer("Выберите предмет...", reply_markup=kb, parse_mode=ParseMode.MARKDOWN)
 
 
@@ -918,23 +928,23 @@ async def marks_handle(message: types.Message):
                                reply_markup=types.ReplyKeyboardRemove(), parse_mode=ParseMode.MARKDOWN)
 
 
-@dp.message_handler(Text(contains=" "))
-async def hometasks_handle(message: types.Message):
+@dp.message_handler(state=wait_for_ht.ht_subject)
+async def hometasks_handle(message: types.Message, state: FSMContext):
     """
     Обработчик вывода дз
-    :param message:
-    :return:
     """
+    await state.update_data(ht_subject=message.text)
     tg_id = message.from_user.id
+    user_data = await state.get_data()
     if await is_user_logined(tg_id, message):
-        hometask = get_hometask(tg_id, message.text[:-1])
+        hometask = get_hometask(tg_id, message.text)
         if len(hometask) == 0:
-            if message.text[:-1] == "Все задания":
+            if message.text == "Все задания":
                 pretty_hometask = "У вас нет совершенно нет домашних заданий\n_Удивительно!_"
             else:
-                pretty_hometask = f"У вас нет Д/З по предмету \"{message.text[:-1]}\""
+                pretty_hometask = f"У вас нет Д/З по предмету \"{message.text}\""
         else:
-            pretty_hometask = "```" + hometask_table(hometask, message.text[:-1]) + "```"
+            pretty_hometask = "```" + hometask_table(hometask, message.text) + "```"
 
         # Лимит символов
         if len(pretty_hometask) > 4000:
@@ -950,7 +960,7 @@ async def hometasks_handle(message: types.Message):
         else:
             await bot.send_message(message.chat.id, pretty_hometask,
                                    reply_markup=types.ReplyKeyboardRemove(), parse_mode=ParseMode.MARKDOWN)
-
+    await state.finish()
 
 # Запуск работы бота
 if __name__ == '__main__':
